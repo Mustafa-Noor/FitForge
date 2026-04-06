@@ -6,9 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitforge.data.PreferencesManager
 import com.example.fitforge.data.WorkoutRepository
 import com.example.fitforge.notifications.FitNotificationManager
-import com.example.fitforge.utils.BadgeChecker
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -71,20 +69,16 @@ class LogViewModel(application: Application) : AndroidViewModel(application) {
 				muscleGroup = state.muscleGroup,
 				sets = sets ?: 0,
 				reps = reps ?: 0,
-				weightKg = state.weight.toIntOrNull(),
-				notes = state.notes.trim().ifBlank { null }
+				weightKg = state.weight.toFloatOrNull() ?: 0f,
+				notes = state.notes.trim(),
+				dateMillis = System.currentTimeMillis()
 			)
-			WorkoutRepository.addWorkout(workout)
-			preferencesManager.updateStreakOnWorkoutLogged()
-
-			val total = WorkoutRepository.currentCount()
-			val streakValue = preferencesManager.currentStreak.first()
-			val bestValue = preferencesManager.bestStreak.first()
-			BadgeChecker.checkBadges(totalWorkouts = total, currentStreak = streakValue, bestStreak = bestValue)
-
+			val newlyUnlocked = WorkoutRepository.saveWorkout(workout)
 			notificationManager.sendWorkoutLoggedNotification()
+			if (newlyUnlocked.isNotEmpty()) {
+				// badges are stored via prefs; UI can query Profile screen state.
+			}
 			onResult(true, "Logged. Built different.")
 		}
 	}
 }
-

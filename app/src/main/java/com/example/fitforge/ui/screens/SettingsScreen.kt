@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.fitforge.data.PreferencesManager
 import com.example.fitforge.data.WorkoutRepository
+import com.example.fitforge.notifications.ReminderAlarmScheduler
 import com.example.fitforge.ui.components.FitForgeTopBar
 import com.example.fitforge.ui.components.TopBarNavType
 import com.example.fitforge.ui.theme.FitError
@@ -69,7 +70,13 @@ fun SettingsScreen(navController: NavController) {
 				title = "Daily Reminder",
 				subtitle = "Nudge at 7:00 PM if not logged",
 				checked = reminderEnabled,
-				onCheckedChange = { enabled -> scope.launch { preferences.setDailyReminder(enabled) } }
+				onCheckedChange = { enabled ->
+					scope.launch {
+						preferences.setDailyReminder(enabled)
+						if (enabled) ReminderAlarmScheduler.scheduleDailyCheck(context)
+						else ReminderAlarmScheduler.cancelDailyCheck(context)
+					}
+				}
 			)
 
 			Text("ABOUT", style = MaterialTheme.typography.labelLarge)

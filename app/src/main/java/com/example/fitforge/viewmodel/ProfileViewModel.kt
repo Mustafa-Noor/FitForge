@@ -27,16 +27,23 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 	init {
 		viewModelScope.launch {
 			combine(
-				WorkoutRepository.observeWorkouts(),
+				WorkoutRepository.getWorkoutsFlow(),
 				preferencesManager.currentStreak,
-				preferencesManager.bestStreak
-			) { workouts, currentStreak, bestStreak ->
+				preferencesManager.bestStreak,
+				preferencesManager.badgeStates
+			) { workouts, currentStreak, bestStreak, badgeStates ->
 				val total = workouts.size
+				val badges = BadgeChecker.allBadges().map { badge ->
+					badge.copy(
+						isUnlocked = badgeStates[badge.id] ?: false,
+						unlockedDateMillis = if (badgeStates[badge.id] == true) System.currentTimeMillis() else null
+					)
+				}
 				ProfileUiState(
 					totalWorkouts = total,
 					currentStreak = currentStreak,
 					bestStreak = bestStreak,
-					badges = BadgeChecker.checkBadges(total, currentStreak, bestStreak)
+					badges = badges
 				)
 			}.collect { state ->
 				stateMutable.update { state }
@@ -44,4 +51,3 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 		}
 	}
 }
-

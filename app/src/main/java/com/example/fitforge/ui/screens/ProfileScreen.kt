@@ -30,6 +30,7 @@ import com.example.fitforge.data.models.Badge
 import com.example.fitforge.ui.components.FitForgeTopBar
 import com.example.fitforge.ui.components.TopBarNavType
 import com.example.fitforge.ui.theme.FitTextDisabled
+import com.example.fitforge.utils.DateUtils
 import com.example.fitforge.viewmodel.ProfileViewModel
 
 @Composable
@@ -40,7 +41,7 @@ fun ProfileScreen(
 ) {
 	val state by viewModel.uiState.collectAsState()
 	var selectedBadge by remember { mutableStateOf<Badge?>(null) }
-	val unlockedCount = state.badges.count { it.unlocked }
+	val unlockedCount = state.badges.count { it.isUnlocked }
 
 	Scaffold(
 		topBar = {
@@ -76,18 +77,18 @@ fun ProfileScreen(
 							.clickable { selectedBadge = badge }
 					) {
 						Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-							Text(if (badge.unlocked) badge.icon else "🔒")
+							Text(if (badge.isUnlocked) badge.emoji else "🔒")
 							Text(
-								badge.title,
-								color = if (badge.unlocked) MaterialTheme.colorScheme.onSurface else FitTextDisabled
+								badge.name,
+								color = if (badge.isUnlocked) MaterialTheme.colorScheme.onSurface else FitTextDisabled
 							)
 							Text(
 								badge.description,
 								style = MaterialTheme.typography.bodySmall,
-								color = if (badge.unlocked) MaterialTheme.colorScheme.onSurfaceVariant else FitTextDisabled
+								color = if (badge.isUnlocked) MaterialTheme.colorScheme.onSurfaceVariant else FitTextDisabled
 							)
-							badge.unlockedDate?.let {
-								Text("Unlocked $it", style = MaterialTheme.typography.labelSmall)
+							badge.unlockedDateMillis?.let {
+								Text("Unlocked ${DateUtils.formatHistoryDate(it)}", style = MaterialTheme.typography.labelSmall)
 							}
 						}
 					}
@@ -100,7 +101,7 @@ fun ProfileScreen(
 		val badge = selectedBadge ?: return
 		AlertDialog(
 			onDismissRequest = { selectedBadge = null },
-			title = { Text(badge.title) },
+			title = { Text(badge.name) },
 			text = { Text("${badge.description}\n\nCondition: ${badge.unlockCondition}") },
 			confirmButton = {
 				TextButton(onClick = { selectedBadge = null }) {
@@ -121,4 +122,3 @@ private fun ProfileStatCard(title: String, value: String, subtitle: String, modi
 		}
 	}
 }
-

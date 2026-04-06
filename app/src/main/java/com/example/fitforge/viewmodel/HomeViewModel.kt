@@ -34,20 +34,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 				preferencesManager.currentStreak,
 				preferencesManager.bestStreak,
 				preferencesManager.lastLoggedDate,
-				WorkoutRepository.observeWorkouts()
-			) { streak, bestStreak, lastLoggedDate, workouts ->
-				val latest = workouts.maxByOrNull { it.timestamp }
-				val total = workouts.size
-				val thisWeek = workouts.count {
-					!it.timestamp.toLocalDate().isBefore(java.time.LocalDate.now().with(java.time.DayOfWeek.MONDAY))
-				}
+				WorkoutRepository.getLatestFlow(),
+				WorkoutRepository.getStatsFlow()
+			) { streak, bestStreak, lastLoggedDate, latest, stats ->
 				HomeUiState(
 					streak = streak,
 					bestStreak = bestStreak,
 					lastLoggedLabel = DateUtils.relativeLastLoggedLabel(lastLoggedDate),
-					bannerText = RoastStrings.getHomeBanner(streak, total),
+					bannerText = RoastStrings.getHomeBanner(streak, stats.totalWorkouts),
 					latestWorkout = latest,
-					stats = WorkoutStats(totalWorkouts = total, thisWeekSessions = thisWeek, bestStreak = bestStreak)
+					stats = stats.copy(bestStreak = bestStreak)
 				)
 			}.collect { newState ->
 				uiStateMutable.update { newState }
@@ -55,4 +51,3 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 		}
 	}
 }
-

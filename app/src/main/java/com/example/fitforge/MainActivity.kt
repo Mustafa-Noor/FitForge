@@ -53,8 +53,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.CircleShape
 import com.example.fitforge.data.PreferencesManager
+import com.example.fitforge.data.WorkoutRepository
+import com.example.fitforge.notifications.FitNotificationManager
+import com.example.fitforge.notifications.ReminderAlarmScheduler
 import com.example.fitforge.navigation.FitNavGraph
 import com.example.fitforge.ui.screens.WelcomeScreen
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.fitforge.ui.theme.FitForgeTheme
@@ -63,6 +68,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        WorkoutRepository.initialize(applicationContext)
+        FitNotificationManager.createChannels(applicationContext)
+        lifecycleScope.launch {
+            val prefs = PreferencesManager(applicationContext)
+            if (prefs.dailyReminderEnabled.first()) {
+                ReminderAlarmScheduler.scheduleDailyCheck(applicationContext)
+            }
+        }
         setContent {
             FitForgeTheme {
                 FitForgeApp()

@@ -41,11 +41,11 @@ fun WorkoutCard(
 						modifier = Modifier.padding(start = 8.dp)
 					)
 				}
-				Text(DateUtils.formatHistoryDate(workout.timestamp), style = MaterialTheme.typography.bodySmall)
+				Text(DateUtils.formatHistoryDate(workout.dateMillis), style = MaterialTheme.typography.bodySmall)
 			}
 			Text("${workout.muscleGroup}  •  ${workout.sets} sets × ${workout.reps} reps")
 			Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-				Text(workout.weightKg?.let { "$it kg" } ?: "Bodyweight", style = MaterialTheme.typography.bodySmall)
+				Text(if (workout.weightKg > 0f) "${workout.weightKg} kg" else "Bodyweight", style = MaterialTheme.typography.bodySmall)
 				if (onDeleteClick != null) {
 					IconButton(onClick = onDeleteClick) {
 						Icon(Icons.Default.Delete, contentDescription = "Delete workout")
@@ -55,4 +55,3 @@ fun WorkoutCard(
 		}
 	}
 }
-

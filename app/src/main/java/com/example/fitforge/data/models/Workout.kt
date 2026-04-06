@@ -1,17 +1,18 @@
 package com.example.fitforge.data.models
 
-import java.time.LocalDateTime
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
+@Serializable
 data class Workout(
 	val id: String = UUID.randomUUID().toString(),
 	val exerciseName: String,
 	val muscleGroup: String,
 	val sets: Int,
 	val reps: Int,
-	val weightKg: Int?,
-	val notes: String?,
-	val timestamp: LocalDateTime = LocalDateTime.now()
+	val weightKg: Float,
+	val notes: String = "",
+	val dateMillis: Long = System.currentTimeMillis()
 )
 
 data class WorkoutStats(
