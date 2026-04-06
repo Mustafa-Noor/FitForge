@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.fadeIn
@@ -29,13 +28,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
@@ -45,15 +45,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.CircleShape
+import com.example.fitforge.data.PreferencesManager
+import com.example.fitforge.navigation.FitNavGraph
+import com.example.fitforge.ui.screens.WelcomeScreen
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.example.fitforge.ui.theme.FitForgeTheme
 
 class MainActivity : ComponentActivity() {
@@ -70,28 +73,40 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FitForgeApp() {
-    var showWelcomeScreen by remember { mutableStateOf(false) }
-    var startSplashExit by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
+    val isFirstLaunch by preferencesManager.isFirstLaunch.collectAsState(initial = true)
 
-    LaunchedEffect(Unit) {
+    var showWelcomeScreen by remember { mutableStateOf(false) }
+    var showMainApp by remember { mutableStateOf(false) }
+    var startSplashExit by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(isFirstLaunch) {
         delay(2300)
         startSplashExit = true
         delay(700)
-        showWelcomeScreen = true
+        if (isFirstLaunch) {
+            showWelcomeScreen = true
+        } else {
+            showMainApp = true
+        }
     }
 
-    AnimatedContent(
-        targetState = showWelcomeScreen,
-        transitionSpec = {
-            fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
-        },
-        label = "launchTransition"
-    ) { isWelcomeVisible ->
-        if (isWelcomeVisible) {
-            WelcomeScreen()
-        } else {
-            SplashScreen(startExit = startSplashExit)
+    when {
+        showMainApp -> FitNavGraph()
+        showWelcomeScreen -> {
+            WelcomeScreen(
+                onGetStarted = {
+                    scope.launch {
+                        preferencesManager.setFirstLaunchComplete()
+                        showWelcomeScreen = false
+                        showMainApp = true
+                    }
+                }
+            )
         }
+        else -> SplashScreen(startExit = startSplashExit)
     }
 }
 
@@ -107,7 +122,7 @@ fun SplashPreview() {
 @Composable
 fun WelcomePreview() {
     FitForgeTheme {
-        WelcomeScreen()
+        WelcomeScreen(onGetStarted = {})
     }
 }
 
@@ -216,18 +231,4 @@ fun SatelliteDumbbell(modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-fun WelcomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(id = R.string.welcome_title),
-            fontSize = 34.sp
-        )
-    }
-}
+

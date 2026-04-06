@@ -1,4 +1,9 @@
 package com.example.fitforge.data.models
 
-// TODO: Add exercise model.
+data class Exercise(
+	val name: String,
+	val muscleGroup: String,
+	val type: String,
+	val description: String
+)
 
