@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.FitForge" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/fit_orange</item>
+        <item name="colorPrimaryVariant">@color/fit_orange_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/fit_surface2</item>
+        <item name="colorOnSecondary">@color/fit_text_primary</item>
+        <item name="android:colorBackground">@color/fit_bg</item>
+        <item name="android:textColorPrimary">@color/fit_text_primary</item>
+        <item name="android:textColorSecondary">@color/fit_text_secondary</item>
+        <item name="android:windowBackground">@color/fit_bg</item>
 
-    <style name="Theme.FitForge" parent="android:Theme.Material.Light.NoActionBar" />
+        <!-- Fix Spinner and Dialog text color -->
+        <item name="android:spinnerItemStyle">@style/FitSpinnerItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/FitSpinnerDropDownItem</item>
+        <item name="alertDialogTheme">@style/FitAlertDialogTheme</item>
+    </style>
+
+    <style name="FitSpinnerItem" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textColor">@color/fit_text_primary</item>
+    </style>
+
+    <style name="FitSpinnerDropDownItem" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@color/fit_text_primary</item>
+        <item name="android:background">@color/fit_surface</item>
+    </style>
+
+    <style name="FitAlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:background">@color/fit_surface</item>
+        <item name="android:textColorPrimary">@color/fit_text_primary</item>
+        <item name="android:textColorSecondary">@color/fit_text_secondary</item>
+        <item name="colorAccent">@color/fit_orange</item>
+        <item name="buttonBarPositiveButtonStyle">@style/FitDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/FitDialogButton</item>
+    </style>
+
+    <style name="FitDialogButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/fit_orange</item>
+    </style>
 </resources>

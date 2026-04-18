@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand -->
     <color name="fit_orange">#F97316</color>
     <color name="fit_orange_dark">#EA580C</color>
     <color name="fit_orange_light">#FED7AA</color>
 
+    <!-- Backgrounds -->
     <color name="fit_bg">#111827</color>
     <color name="fit_surface">#1F2937</color>
-    <color name="fit_surface_2">#374151</color>
-    <color name="fit_surface_3">#4B5563</color>
+    <color name="fit_surface2">#374151</color>
+    <color name="fit_surface3">#4B5563</color>
 
+    <!-- Aliases for styles -->
+    <color name="dark_background">#111827</color>
+    <color name="dark_surface">#1F2937</color>
+
+    <!-- Text -->
     <color name="fit_text_primary">#F9FAFB</color>
     <color name="fit_text_secondary">#9CA3AF</color>
     <color name="fit_text_disabled">#6B7280</color>
 
+    <!-- Semantic -->
     <color name="fit_success">#22C55E</color>
     <color name="fit_warning">#EAB308</color>
     <color name="fit_error">#EF4444</color>
-    <color name="fit_info">#3B82F6</color>
 
+    <!-- Misc -->
     <color name="fit_divider">#374151</color>
     <color name="fit_border">#4B5563</color>
-
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>

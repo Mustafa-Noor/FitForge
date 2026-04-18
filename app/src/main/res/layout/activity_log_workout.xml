@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fit_bg">
+
+        <!-- Header -->
+        <LinearLayout
+            android:id="@+id/layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="@color/fit_surface"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Log Workout"
+                style="@style/TitleTextStyle" />
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_menu"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/fit_orange" />
+        </LinearLayout>
+
+        <!-- Content ScrollView -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_header"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Exercise Name Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/DarkCardStyle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Exercise Name"
+                            style="@style/LabelTextStyle" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_exercise"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            style="@style/TextInputLayoutStyle">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etExerciseName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="e.g., Bench Press"
+                                style="@style/EditTextStyle" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Muscle Group"
+                            android:layout_marginTop="16dp"
+                            style="@style/LabelTextStyle" />
+
+                        <Spinner
+                            android:id="@+id/spinnerMuscleGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:backgroundTint="@color/fit_orange" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Sets, Reps & Weight Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/DarkCardStyle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sets, Reps &amp; Weight"
+                            style="@style/LabelTextStyle" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/layout_sets"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="4dp"
+                                style="@style/TextInputLayoutStyle">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etSets"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Sets"
+                                    android:inputType="number"
+                                    style="@style/EditTextStyle" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/layout_reps"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="4dp"
+                                style="@style/TextInputLayoutStyle">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etReps"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Reps"
+                                    android:inputType="number"
+                                    style="@style/EditTextStyle" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/layout_weight"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp"
+                                style="@style/TextInputLayoutStyle">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etWeight"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Weight"
+                                    android:inputType="numberDecimal"
+                                    style="@style/EditTextStyle" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Notes Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/DarkCardStyle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Notes (Optional)"
+                            style="@style/LabelTextStyle" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_notes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            style="@style/TextInputLayoutStyle">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etNotes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Any details?"
+                                style="@style/EditTextStyle" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp">
+
+                    <Button
+                        android:id="@+id/btnRestTimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Set Rest Timer"
+                        android:layout_marginBottom="8dp"
+                        style="@style/SecondaryButtonStyle" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnSaveWorkout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="Save Workout"
+                            android:textColor="@color/fit_bg"
+                            style="@style/PrimaryButtonStyle" />
+
+                        <Button
+                            android:id="@+id/btn_cancel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="Cancel"
+                            style="@style/SecondaryButtonStyle" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/fit_surface"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        app:itemTextColor="@color/fit_text_primary"
+        app:itemIconTint="@color/fit_orange" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
