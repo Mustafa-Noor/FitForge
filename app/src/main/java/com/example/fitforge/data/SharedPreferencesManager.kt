@@ -50,6 +50,15 @@ class SharedPreferencesManager(context: Context) {
         return runCatching { Json.decodeFromString<List<Workout>>(json) }.getOrDefault(emptyList())
     }
 
+    fun updateWorkout(updatedWorkout: Workout) {
+        val existing = getWorkouts().toMutableList()
+        val index = existing.indexOfFirst { it.id == updatedWorkout.id }
+        if (index != -1) {
+            existing[index] = updatedWorkout
+            prefs.edit().putString("workouts_json", Json.encodeToString(existing)).apply()
+        }
+    }
+
     fun deleteWorkout(id: String) {
         val updated = getWorkouts().filter { it.id != id }
         prefs.edit().putString("workouts_json", Json.encodeToString(updated)).apply()

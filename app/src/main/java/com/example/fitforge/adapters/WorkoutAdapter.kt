@@ -3,7 +3,7 @@ package com.example.fitforge.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitforge.R
@@ -16,6 +16,7 @@ class WorkoutAdapter(
 ) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
 
     interface OnWorkoutActionListener {
+        fun onEditClick(workout: Workout, position: Int)
         fun onDeleteClick(workout: Workout, position: Int)
     }
 
@@ -23,7 +24,8 @@ class WorkoutAdapter(
         val tvWorkoutName:    TextView = itemView.findViewById(R.id.tvWorkoutName)
         val tvWorkoutDetails: TextView = itemView.findViewById(R.id.tvWorkoutDetails)
         val tvWorkoutDate:    TextView = itemView.findViewById(R.id.tvWorkoutDate)
-        val btnDelete:        Button   = itemView.findViewById(R.id.btnDeleteWorkout)
+        val btnEdit:          ImageButton = itemView.findViewById(R.id.btnEditWorkout)
+        val btnDelete:        ImageButton = itemView.findViewById(R.id.btnDeleteWorkout)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
@@ -37,6 +39,8 @@ class WorkoutAdapter(
         holder.tvWorkoutName.text    = workout.exerciseName
         holder.tvWorkoutDetails.text = "${workout.muscleGroup}  •  ${workout.sets} sets × ${workout.reps} reps"
         holder.tvWorkoutDate.text    = DateUtils.formatHistoryDate(workout.dateMillis)
+        
+        holder.btnEdit.setOnClickListener { listener.onEditClick(workout, position) }
         holder.btnDelete.setOnClickListener { listener.onDeleteClick(workout, position) }
     }
 

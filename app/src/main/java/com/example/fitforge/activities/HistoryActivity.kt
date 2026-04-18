@@ -78,8 +78,14 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
         recyclerView.visibility = if (workoutList.isEmpty()) View.GONE else View.VISIBLE
     }
 
+    override fun onEditClick(workout: Workout, position: Int) {
+        val intent = Intent(this, LogWorkoutActivity::class.java)
+        intent.putExtra("edit_workout_id", workout.id)
+        startActivity(intent)
+    }
+
     override fun onDeleteClick(workout: Workout, position: Int) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.FitAlertDialogTheme)
             .setTitle("Delete this workout?")
             .setMessage("This action cannot be undone.")
             .setPositiveButton("Yeah, delete it") { _, _ ->

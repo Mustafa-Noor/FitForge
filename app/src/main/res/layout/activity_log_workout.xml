@@ -21,20 +21,22 @@
             android:background="@color/fit_surface"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Log Workout"
-                style="@style/TitleTextStyle" />
-
             <ImageButton
                 android:id="@+id/btnMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_menu"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/fit_orange" />
+                app:tint="@color/fit_orange"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Log Workout"
+                style="@style/TitleTextStyle" />
         </LinearLayout>
 
         <!-- Content ScrollView -->
@@ -76,12 +78,12 @@
                             android:layout_marginTop="8dp"
                             style="@style/TextInputLayoutStyle">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etExerciseName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="e.g., Bench Press"
-                                style="@style/EditTextStyle" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etExerciseName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="e.g., Bench Press"
+                            style="@style/EditTextStyle" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView

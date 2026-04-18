@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardBackgroundColor="@color/dark_surface"
+    app:cardBackgroundColor="@color/fit_surface"
     app:cardElevation="4dp">
 
     <LinearLayout
@@ -17,7 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -50,15 +51,29 @@
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnDeleteWorkout"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✕"
-                android:backgroundTint="@color/fit_error"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:padding="8dp" />
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnEditWorkout"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/fit_orange"
+                    android:padding="8dp" />
+
+                <ImageButton
+                    android:id="@+id/btnDeleteWorkout"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_delete"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/fit_error"
+                    android:padding="8dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
