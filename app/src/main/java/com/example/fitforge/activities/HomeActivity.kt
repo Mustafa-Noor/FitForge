@@ -1,6 +1,7 @@
 package com.example.fitforge.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -12,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.fitforge.R
 import com.example.fitforge.data.SharedPreferencesManager
 import com.example.fitforge.utils.RoastStrings
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +35,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+
+        updateNavHeader(navView)
 
         tvStreakNumber   = findViewById(R.id.tvStreakNumber)
         tvLastLogged     = findViewById(R.id.tvLastLogged)
@@ -66,9 +70,27 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    private fun updateNavHeader(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
+        val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
+
+        tvNavUsername.text = prefs.getUsername()
+        
+        val savedUri = prefs.getProfileImageUri()
+        if (savedUri != null) {
+            try {
+                ivNavProfilePic.setImageURI(Uri.parse(savedUri))
+            } catch (e: Exception) {
+                ivNavProfilePic.setImageResource(R.drawable.ff_gym_logo)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         loadData()
+        updateNavHeader(findViewById(R.id.nav_view))
     }
 
     private fun loadData() {

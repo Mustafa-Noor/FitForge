@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
-    android:background="@color/fit_orange"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:theme="@style/Theme.Design.NoActionBar">
+    android:layout_height="180dp"
+    android:background="@color/fit_surface"
+    android:padding="24dp">
 
-    <ImageView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/header_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivNavProfilePic"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ff_gym_logo" />
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ff_gym_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        app:strokeColor="@color/fit_orange"
+        app:strokeWidth="2dp" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/tvNavUsername"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="FitForge"
+        android:layout_marginTop="12dp"
+        android:text="FitForge User"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivNavProfilePic" />
 
     <TextView
+        android:id="@+id/tvNavTagline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Built Different"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textColor="@color/fit_orange"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNavUsername" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
