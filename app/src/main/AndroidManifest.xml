@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,29 +11,48 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitForge">
+
+        <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.FitForge">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".notifications.RoastReceiver"
-            android:exported="false" />
+        <!-- WorkoutListActivity -->
+        <activity
+            android:name=".WorkoutListActivity"
+            android:exported="false"
+            android:label="Workout History" />
 
-        <receiver
-            android:name=".notifications.BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+        <!-- LogWorkoutActivity -->
+        <activity
+            android:name=".LogWorkoutActivity"
+            android:exported="false"
+            android:label="Log Workout" />
+
+        <!-- ExerciseLibraryActivity -->
+        <activity
+            android:name=".ExerciseLibraryActivity"
+            android:exported="false"
+            android:label="Exercise Library" />
+
+        <!-- ProfileActivity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:label="Profile Settings" />
+
+        <!-- StreakHistoryActivity -->
+        <activity
+            android:name=".StreakHistoryActivity"
+            android:exported="false"
+            android:label="Streak History" />
+
     </application>
 
 </manifest>

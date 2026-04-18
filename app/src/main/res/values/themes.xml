@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.FitForge" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.FitForge" parent="Theme.AppCompat.NoActionBar">
+        <!-- Dark theme -->
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">@color/fit_orange</item>
+        <item name="colorPrimaryDark">@color/fit_orange_dark</item>
+        <item name="colorAccent">@color/fit_orange</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/fit_text_secondary</item>
+    </style>
 </resources>

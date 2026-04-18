@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">FitForge</string>
-    <string name="brand_name">Fit Forge</string>
-    <string name="welcome_title">Welcome to Fit Forge</string>
+    <string name="log_workout">Log Workout</string>
 </resources>
