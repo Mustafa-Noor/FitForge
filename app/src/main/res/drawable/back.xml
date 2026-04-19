@@ -1,0 +1,55 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="300"
+    android:viewportHeight="300">
+  <path
+      android:pathData="M0,0h300v300h-300z"
+      android:fillColor="#1e2a3a"/>
+  <path
+      android:pathData="M10,26a16,16 0,0 1,16 -16h248a16,16 0,0 1,16,16v248a16,16 0,0 1,-16,16h-248a16,16 0,0 1,-16,-16z"
+      android:fillColor="#253447"/>
+  <path
+      android:pathData="M10,210h280v80h-280z"
+      android:fillColor="#1a3a5a"
+      android:fillAlpha="0.6"/>
+  <path
+      android:pathData="M150,229m-75,0a75,14 0 1 1 150 0a75,14 0 1 1 -150 0"
+      android:fillColor="#4a6080"/>
+  <path
+      android:pathData="M80,200h140v20h-140z"
+      android:fillColor="#4a6080"/>
+  <path
+      android:pathData="M72,177h58v6h-58z"
+      android:fillColor="#8a6030"
+      android:strokeColor="#6a4020"
+      android:strokeWidth="1"/>
+  <path
+      android:pathData="M72,180m-10,0a10,5 0 1 1 20 0a10,5 0 1 1 -20 0"
+      android:fillColor="#6a4020"/>
+  <path
+      android:pathData="M170,177h58v6h-58z"
+      android:fillColor="#8a6030"
+      android:strokeColor="#6a4020"
+      android:strokeWidth="1"/>
+  <path
+      android:pathData="M228,180m-10,0a10,5 0 1 1 20 0a10,5 0 1 1 -20 0"
+      android:fillColor="#6a4020"/>
+  <!-- Torso Clothes (Back view tank top) -->
+  <path
+      android:pathData="M126,178h48v30h-48z"
+      android:fillColor="@color/fit_orange"/>
+  <path
+      android:pathData="M150,166m-16,0a16,16 0 1 1 32 0a16,16 0 1 1 -32 0"
+      android:fillColor="#c8864a"/>
+  <!-- Arm Clothes (Shoulder straps) -->
+  <path
+      android:pathData="M126,178v-10h10v10zM164,178v-10h10v10z"
+      android:fillColor="@color/fit_orange"/>
+  <path
+      android:pathData="M108,183h26v10h-26z"
+      android:fillColor="#c8864a"/>
+  <path
+      android:pathData="M166,183h26v10h-26z"
+      android:fillColor="#c8864a"/>
+</vector>

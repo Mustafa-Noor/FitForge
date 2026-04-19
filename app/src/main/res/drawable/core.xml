@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="300"
+    android:viewportHeight="300">
+  <path
+      android:pathData="M0,0h300v300h-300z"
+      android:fillColor="#1e2a3a"/>
+  <path
+      android:pathData="M10,26a16,16 0,0 1,16 -16h248a16,16 0,0 1,16,16v248a16,16 0,0 1,-16,16h-248a16,16 0,0 1,-16,-16z"
+      android:fillColor="#253447"/>
+  <path
+      android:pathData="M50,200h200v12h-200z"
+      android:fillColor="#2a6a3a"/>
+  <!-- Legs Clothes (Pants) -->
+  <path
+      android:pathData="M134,196h22v55h-22z"
+      android:fillColor="#3f51b5"/>
+  <path
+      android:pathData="M156,196h22v55h-22z"
+      android:fillColor="#3f51b5"/>
+  <path
+      android:pathData="M143,252m-14,0a14,7 0 1 1 28 0a14,7 0 1 1 -28 0"
+      android:fillColor="#222222"/>
+  <path
+      android:pathData="M169,252m-14,0a14,7 0 1 1 28 0a14,7 0 1 1 -28 0"
+      android:fillColor="#222222"/>
+  <!-- Torso Clothes (T-shirt) -->
+  <path
+      android:pathData="M128,160h44v44h-44z"
+      android:fillColor="@color/fit_orange"/>
+  <path
+      android:pathData="M150,144m-17,0a17,17 0 1 1 34 0a17,17 0 1 1 -34 0"
+      android:fillColor="#c8864a"/>
+  <!-- Arm Clothes (Sleeves) -->
+  <path
+      android:pathData="M108,138h28v10h-28z"
+      android:fillColor="@color/fit_orange"/>
+  <path
+      android:pathData="M164,138h28v10h-28z"
+      android:fillColor="@color/fit_orange"/>
+</vector>

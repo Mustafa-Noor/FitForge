@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="300"
+    android:viewportHeight="300">
+  <path
+      android:pathData="M0,0h300v300h-300z"
+      android:fillColor="#1e2a3a"/>
+  <path
+      android:pathData="M10,26a16,16 0,0 1,16 -16h248a16,16 0,0 1,16,16v248a16,16 0,0 1,-16,16h-248a16,16 0,0 1,-16,-16z"
+      android:fillColor="#253447"/>
+  <!-- Torso Clothes (T-shirt) -->
+  <path
+      android:pathData="M128,154h44v44h-44z"
+      android:fillColor="@color/fit_orange"/>
+  <path
+      android:pathData="M150,138m-18,0a18,18 0,1 1,36 0a18,18 0,1 1,-36 0"
+      android:fillColor="#c8864a"/>
+  <!-- Legs Clothes (Pants) -->
+  <path
+      android:pathData="M124,198h22v42h-22z"
+      android:fillColor="#3f51b5"/>
+  <path
+      android:pathData="M154,198h22v42h-22z"
+      android:fillColor="#3f51b5"/>
+  <path
+      android:pathData="M118,240h32v12h-32z"
+      android:fillColor="#222222"/>
+  <path
+      android:pathData="M150,240h32v12h-32z"
+      android:fillColor="#222222"/>
+</vector>

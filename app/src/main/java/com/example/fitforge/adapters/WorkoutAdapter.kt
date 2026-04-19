@@ -13,11 +13,18 @@ import com.example.fitforge.utils.DateUtils
 class WorkoutAdapter(
     private val workoutList: MutableList<Workout>,
     private val listener: OnWorkoutActionListener
-) : RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val TYPE_HEADER = 0
+    private val TYPE_ITEM = 1
 
     interface OnWorkoutActionListener {
         fun onEditClick(workout: Workout, position: Int)
         fun onDeleteClick(workout: Workout, position: Int)
+    }
+
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvHeaderDate: TextView = itemView.findViewById(R.id.tvHeaderDate)
     }
 
     class WorkoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -28,27 +35,68 @@ class WorkoutAdapter(
         val btnDelete:        ImageButton = itemView.findViewById(R.id.btnDeleteWorkout)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_workout, parent, false)
-        return WorkoutViewHolder(view)
+    private var itemsWithHeaders = mutableListOf<Any>()
+
+    init {
+        updateItems()
     }
 
-    override fun onBindViewHolder(holder: WorkoutViewHolder, position: Int) {
-        val workout = workoutList[position]
-        holder.tvWorkoutName.text    = workout.exerciseName
-        holder.tvWorkoutDetails.text = "${workout.muscleGroup}  •  ${workout.sets} sets × ${workout.reps} reps"
-        holder.tvWorkoutDate.text    = DateUtils.formatHistoryDate(workout.dateMillis)
-        
-        holder.btnEdit.setOnClickListener { listener.onEditClick(workout, position) }
-        holder.btnDelete.setOnClickListener { listener.onDeleteClick(workout, position) }
+    private fun updateItems() {
+        itemsWithHeaders.clear()
+        if (workoutList.isEmpty()) return
+
+        var lastDate = ""
+        workoutList.forEach { workout ->
+            val currentDate = DateUtils.formatHistoryDate(workout.dateMillis)
+            if (currentDate != lastDate) {
+                itemsWithHeaders.add(currentDate)
+                lastDate = currentDate
+            }
+            itemsWithHeaders.add(workout)
+        }
     }
 
-    override fun getItemCount(): Int = workoutList.size
+    override fun getItemViewType(position: Int): Int {
+        return if (itemsWithHeaders[position] is String) TYPE_HEADER else TYPE_ITEM
+    }
 
-    fun removeItem(position: Int) {
-        workoutList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, workoutList.size)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_HEADER) {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_workout_header, parent, false)
+            HeaderViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_workout, parent, false)
+            WorkoutViewHolder(view)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = itemsWithHeaders[position]
+        if (holder is HeaderViewHolder && item is String) {
+            holder.tvHeaderDate.text = item.uppercase()
+        } else if (holder is WorkoutViewHolder && item is Workout) {
+            holder.tvWorkoutName.text    = item.exerciseName
+            holder.tvWorkoutDetails.text = "${item.muscleGroup}  •  ${item.sets} sets × ${item.reps} reps"
+            holder.tvWorkoutDate.text    = DateUtils.formatHistoryDate(item.dateMillis)
+            
+            holder.btnEdit.setOnClickListener { listener.onEditClick(item, position) }
+            holder.btnDelete.setOnClickListener { listener.onDeleteClick(item, position) }
+        }
+    }
+
+    override fun getItemCount(): Int = itemsWithHeaders.size
+
+    fun refreshData() {
+        updateItems()
+        notifyDataSetChanged()
+    }
+
+    // This ensures that when we notifyDataSetChanged in HomeActivity/HistoryActivity,
+    // the internal itemsWithHeaders list is also updated.
+    fun setData(newList: List<Workout>) {
+        workoutList.clear()
+        workoutList.addAll(newList)
+        updateItems()
+        notifyDataSetChanged()
     }
 }

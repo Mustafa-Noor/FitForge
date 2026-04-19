@@ -3,17 +3,18 @@ package com.example.fitforge.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitforge.R
 
 class MuscleGroupAdapter(
-    private val muscleGroups: List<Pair<String, String>>,
+    private val muscleGroups: List<Triple<String, Int, String>>, // Name, IconRes, Triple
     private val listener: (String) -> Unit
 ) : RecyclerView.Adapter<MuscleGroupAdapter.MuscleViewHolder>() {
 
     class MuscleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvEmoji: TextView = itemView.findViewById(R.id.tvMuscleEmoji)
+        val ivIcon: ImageView = itemView.findViewById(R.id.ivMuscleIcon)
         val tvName: TextView = itemView.findViewById(R.id.tvMuscleName)
     }
 
@@ -23,9 +24,9 @@ class MuscleGroupAdapter(
     }
 
     override fun onBindViewHolder(holder: MuscleViewHolder, position: Int) {
-        val (name, emoji) = muscleGroups[position]
+        val (name, iconRes, _) = muscleGroups[position]
         holder.tvName.text = name
-        holder.tvEmoji.text = emoji
+        holder.ivIcon.setImageResource(iconRes)
         holder.itemView.setOnClickListener { listener(name) }
     }
 

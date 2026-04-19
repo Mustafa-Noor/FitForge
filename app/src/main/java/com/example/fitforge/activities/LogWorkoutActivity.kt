@@ -1,14 +1,15 @@
 package com.example.fitforge.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -22,15 +23,23 @@ import com.example.fitforge.notifications.FitNotificationManager
 import com.example.fitforge.utils.BadgeChecker
 import com.example.fitforge.data.models.Badge
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import android.text.TextWatcher
+import com.google.android.material.imageview.ShapeableImageView
 
 class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var etExerciseName: EditText
+    private lateinit var etExerciseName: TextInputEditText
+    private lateinit var layoutExercise: TextInputLayout
     private lateinit var spinnerMuscleGroup: Spinner
-    private lateinit var etSets: EditText
-    private lateinit var etReps: EditText
-    private lateinit var etWeight: EditText
-    private lateinit var etNotes: EditText
+    private lateinit var etSets: TextInputEditText
+    private lateinit var layoutSets: TextInputLayout
+    private lateinit var etReps: TextInputEditText
+    private lateinit var layoutReps: TextInputLayout
+    private lateinit var etWeight: TextInputEditText
+    private lateinit var layoutWeight: TextInputLayout
+    private lateinit var etNotes: TextInputEditText
     private lateinit var btnSaveWorkout: Button
     private lateinit var btnRestTimer: Button
     private lateinit var tvTitle: TextView
@@ -51,15 +60,21 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
 
+        updateNavHeader(navView)
+
         findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
         etExerciseName  = findViewById(R.id.etExerciseName)
+        layoutExercise  = findViewById(R.id.layout_exercise)
         spinnerMuscleGroup = findViewById(R.id.spinnerMuscleGroup)
         etSets          = findViewById(R.id.etSets)
+        layoutSets      = findViewById(R.id.layout_sets)
         etReps          = findViewById(R.id.etReps)
+        layoutReps      = findViewById(R.id.layout_reps)
         etWeight        = findViewById(R.id.etWeight)
+        layoutWeight    = findViewById(R.id.layout_weight)
         etNotes         = findViewById(R.id.etNotes)
         btnSaveWorkout  = findViewById(R.id.btnSaveWorkout)
         btnRestTimer    = findViewById(R.id.btnRestTimer)
@@ -68,6 +83,9 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val adapter = ArrayAdapter(this, R.layout.fit_spinner_item, muscleGroups)
         adapter.setDropDownViewResource(R.layout.fit_spinner_dropdown_item)
         spinnerMuscleGroup.adapter = adapter
+
+        // Setup TextWatchers to clear errors
+        setupValidationWatchers()
 
         // Check Mode
         val editWorkoutId = intent.getStringExtra("edit_workout_id")
@@ -84,6 +102,29 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         btnSaveWorkout.setOnClickListener { saveWorkout() }
         btnRestTimer.setOnClickListener { showRestTimerDialog() }
         findViewById<Button>(R.id.btn_cancel).setOnClickListener { finish() }
+    }
+
+    private fun updateNavHeader(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
+        val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
+
+        tvNavUsername.text = prefs.getUsername()
+        
+        val savedUri = prefs.getProfileImageUri()
+        if (savedUri != null) {
+            try {
+                ivNavProfilePic.setImageURI(Uri.parse(savedUri))
+            } catch (e: Exception) {
+                ivNavProfilePic.setImageResource(R.drawable.ff_gym_logo)
+            }
+        }
+    }
+
+    private fun setupValidationWatchers() {
+        etExerciseName.addTextChangedListener(SimpleTextWatcher { layoutExercise.error = null })
+        etSets.addTextChangedListener(SimpleTextWatcher { layoutSets.error = null })
+        etReps.addTextChangedListener(SimpleTextWatcher { layoutReps.error = null })
     }
 
     private fun setupEditMode(workout: Workout) {
@@ -103,31 +144,48 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun saveWorkout() {
         val name   = etExerciseName.text.toString().trim()
         val muscle = spinnerMuscleGroup.selectedItem.toString()
-        val sets   = etSets.text.toString().trim()
-        val reps   = etReps.text.toString().trim()
-        val weight = etWeight.text.toString().trim()
+        val setsStr = etSets.text.toString().trim()
+        val repsStr = etReps.text.toString().trim()
+        val weightStr = etWeight.text.toString().trim()
         val notes  = etNotes.text.toString().trim()
 
-        if (name.isEmpty()) { etExerciseName.error = "Exercise name is required"; return }
-        if (sets.isEmpty())  { etSets.error = "Sets required"; return }
-        if (reps.isEmpty())  { etReps.error = "Reps required"; return }
+        var isValid = true
+
+        if (name.isEmpty()) {
+            layoutExercise.error = "Exercise name is required"
+            isValid = false
+        }
+        if (setsStr.isEmpty()) {
+            layoutSets.error = "Required"
+            isValid = false
+        }
+        if (repsStr.isEmpty()) {
+            layoutReps.error = "Required"
+            isValid = false
+        }
+
+        if (!isValid) return
+
+        val sets = setsStr.toIntOrNull() ?: 0
+        val reps = repsStr.toIntOrNull() ?: 0
+        val weight = weightStr.toFloatOrNull() ?: 0f
 
         val workout = if (isEditMode && workoutToEdit != null) {
             workoutToEdit!!.copy(
                 exerciseName = name,
                 muscleGroup  = muscle,
-                sets         = sets.toInt(),
-                reps         = reps.toInt(),
-                weightKg     = weight.toFloatOrNull() ?: 0f,
+                sets         = sets,
+                reps         = reps,
+                weightKg     = weight,
                 notes        = notes
             )
         } else {
             Workout(
                 exerciseName = name,
                 muscleGroup  = muscle,
-                sets         = sets.toInt(),
-                reps         = reps.toInt(),
-                weightKg     = weight.toFloatOrNull() ?: 0f,
+                sets         = sets,
+                reps         = reps,
+                weightKg     = weight,
                 notes        = notes
             )
         }
@@ -138,13 +196,15 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         } else {
             prefs.saveWorkout(workout)
             prefs.updateStreakAfterWorkout()
+            
+            val previousMuscleGroup = prefs.getLastMuscleGroup() ?: ""
             prefs.setLastMuscleGroup(muscle)
 
             val newBadges = BadgeChecker.checkBadges(
                 totalWorkouts       = prefs.getTotalWorkouts(),
                 currentStreak       = prefs.getCurrentStreak(),
                 lastMuscleGroup     = muscle,
-                previousMuscleGroup = prefs.getLastMuscleGroup() ?: "",
+                previousMuscleGroup = previousMuscleGroup,
                 prefs               = prefs
             )
             newBadges.forEach { badge -> showBadgeDialog(badge) }
@@ -201,5 +261,13 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private class SimpleTextWatcher(private val onTextChanged: (String) -> Unit) : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            onTextChanged(s?.toString() ?: "")
+        }
+        override fun afterTextChanged(s: Editable?) {}
     }
 }

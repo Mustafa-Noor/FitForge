@@ -35,7 +35,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navView: NavigationView
     
     private lateinit var todayAdapter: WorkoutAdapter
-    private val todayWorkoutList = mutableListOf<Workout>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +69,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        // Setup Today's Activity RecyclerView
-        todayAdapter = WorkoutAdapter(todayWorkoutList, this)
+        // Setup Today's Activity RecyclerView with an empty mutable list initially
+        todayAdapter = WorkoutAdapter(mutableListOf(), this)
         rvTodayWorkouts.layoutManager = LinearLayoutManager(this)
         rvTodayWorkouts.adapter = todayAdapter
 
@@ -128,11 +127,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             runCatching { java.time.Instant.ofEpochMilli(it.dateMillis).atZone(java.time.ZoneId.systemDefault()).toLocalDate().toString() == today }.getOrDefault(false)
         }
 
-        todayWorkoutList.clear()
-        todayWorkoutList.addAll(todayLogs)
-        todayAdapter.notifyDataSetChanged()
+        todayAdapter.setData(todayLogs)
 
-        if (todayWorkoutList.isEmpty()) {
+        if (todayLogs.isEmpty()) {
             tvTodayEmpty.visibility = View.VISIBLE
             rvTodayWorkouts.visibility = View.GONE
         } else {

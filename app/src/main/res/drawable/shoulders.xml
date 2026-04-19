@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="300"
+    android:viewportHeight="300">
+    <path android:pathData="M0 0h300v300H0z" android:fillColor="#1E2A3A"/>
+    <path android:pathData="M10 26a16 16 0 0 1 16 -16h248a16 16 0 0 1 16 16v248a16 16 0 0 1 -16 16H26a16 16 0 0 1 -16 -16z" android:fillColor="#253447"/>
+    <path android:pathData="M108 210h84v14h-84z" android:fillColor="#4A3520"/>
+    <path android:pathData="M116 224h12v25h-12zM172 224h12v25h-12z" android:fillColor="#3A2818"/>
+    <!-- Shorts -->
+    <path android:pathData="M118 210h24v15h-24zM158 210h24v15h-24z" android:fillColor="#3F51B5"/>
+    <!-- Legs below shorts -->
+    <path android:pathData="M118 225h24v25h-24zM158 225h24v25h-24z" android:fillColor="#C8864A"/>
+    <path android:pathData="M112 246h32v12h-32zM156 246h32v12h-32z" android:fillColor="#222222"/>
+    <path android:pathData="M122 160m-20 0a20 16 0 1 1 40 0a20 16 0 1 1 -40 0" android:fillColor="#C8864A"/>
+    <path android:pathData="M178 160m-20 0a20 16 0 1 1 40 0a20 16 0 1 1 -40 0" android:fillColor="#C8864A"/>
+    <!-- Tank top -->
+    <path android:pathData="M128 155h44v58h-44z" android:fillColor="@color/fit_orange"/>
+    <path android:pathData="M150 142m-16 0a16 16 0 1 1 32 0a16 16 0 1 1 -32 0" android:fillColor="#C8864A"/>
+    <!-- Shoulder straps -->
+    <path android:pathData="M128 155v-10h10v10zM162 155v-10h10v10z" android:fillColor="@color/fit_orange"/>
+    <path android:pathData="M96 140h36v12h-36zM168 140h36v12h-36z" android:fillColor="#C8864A"/>
+    <path android:pathData="M62 128h176v8h-176z" android:fillColor="#888888"/>
+    <path android:pathData="M62 122h18v20h-18z" android:fillColor="#555555" android:strokeColor="#444444" android:strokeWidth="1"/>
+    <path android:pathData="M80 124h12v16h-12z" android:fillColor="#666666"/>
+    <path android:pathData="M220 122h18v20h-18z" android:fillColor="#555555" android:strokeColor="#444444" android:strokeWidth="1"/>
+    <path android:pathData="M208 124h12v16h-12z" android:fillColor="#666666"/>
+</vector>

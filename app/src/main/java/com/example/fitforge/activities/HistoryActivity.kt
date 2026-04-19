@@ -1,6 +1,7 @@
 package com.example.fitforge.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +21,7 @@ import com.example.fitforge.R
 import com.example.fitforge.adapters.WorkoutAdapter
 import com.example.fitforge.data.SharedPreferencesManager
 import com.example.fitforge.data.models.Workout
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 
 class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListener, NavigationView.OnNavigationItemSelectedListener {
@@ -30,7 +32,6 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
     private lateinit var prefs: SharedPreferencesManager
     private lateinit var adapter: WorkoutAdapter
     private lateinit var drawerLayout: DrawerLayout
-    private val workoutList = mutableListOf<Workout>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,8 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
 
+        updateNavHeader(navView)
+
         findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -49,7 +52,7 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
         spinnerFilter = findViewById(R.id.spinnerFilter)
         tvEmpty      = findViewById(R.id.tvEmpty)
 
-        adapter = WorkoutAdapter(workoutList, this)
+        adapter = WorkoutAdapter(mutableListOf(), this)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
@@ -68,14 +71,31 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
         loadWorkouts("All")
     }
 
+    private fun updateNavHeader(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
+        val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
+
+        tvNavUsername.text = prefs.getUsername()
+        
+        val savedUri = prefs.getProfileImageUri()
+        if (savedUri != null) {
+            try {
+                ivNavProfilePic.setImageURI(Uri.parse(savedUri))
+            } catch (e: Exception) {
+                ivNavProfilePic.setImageResource(R.drawable.ff_gym_logo)
+            }
+        }
+    }
+
     private fun loadWorkouts(filter: String) {
         val all = prefs.getWorkouts()
         val filtered = if (filter == "All") all else all.filter { it.muscleGroup == filter }
-        workoutList.clear()
-        workoutList.addAll(filtered)
-        adapter.notifyDataSetChanged()
-        tvEmpty.visibility = if (workoutList.isEmpty()) View.VISIBLE else View.GONE
-        recyclerView.visibility = if (workoutList.isEmpty()) View.GONE else View.VISIBLE
+        
+        adapter.setData(filtered)
+        
+        tvEmpty.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+        recyclerView.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
     }
 
     override fun onEditClick(workout: Workout, position: Int) {
@@ -90,13 +110,8 @@ class HistoryActivity : AppCompatActivity(), WorkoutAdapter.OnWorkoutActionListe
             .setMessage("This action cannot be undone.")
             .setPositiveButton("Yeah, delete it") { _, _ ->
                 prefs.deleteWorkout(workout.id)
-                workoutList.removeAt(position)
-                adapter.notifyItemRemoved(position)
+                loadWorkouts(spinnerFilter.selectedItem.toString())
                 Toast.makeText(this, "Workout deleted", Toast.LENGTH_SHORT).show()
-                if (workoutList.isEmpty()) {
-                    tvEmpty.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                }
             }
             .setNegativeButton("Wait no", null)
             .show()

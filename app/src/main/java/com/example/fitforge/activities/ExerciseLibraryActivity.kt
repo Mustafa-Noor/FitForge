@@ -1,6 +1,7 @@
 package com.example.fitforge.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +18,9 @@ import com.example.fitforge.R
 import com.example.fitforge.adapters.ExerciseAdapter
 import com.example.fitforge.adapters.MuscleGroupAdapter
 import com.example.fitforge.data.ExerciseData
+import com.example.fitforge.data.SharedPreferencesManager
 import com.example.fitforge.data.models.Exercise
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 
 class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -27,6 +30,7 @@ class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseC
     private lateinit var tvTitle: TextView
     private lateinit var btnBackToCategories: ImageButton
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var prefs: SharedPreferencesManager
     
     private val exerciseList = mutableListOf<Exercise>()
     private lateinit var exerciseAdapter: ExerciseAdapter
@@ -34,24 +38,16 @@ class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseC
     
     private var showingCategories = true
 
-    private val muscleGroupsWithEmojis = listOf(
-        "Chest" to "💪",
-        "Back" to "🚣",
-        "Legs" to "🦵",
-        "Shoulders" to "🏹",
-        "Arms" to "🥊",
-        "Core" to "🧘",
-        "Cardio" to "🏃",
-        "Full Body" to "🏋️"
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_library)
 
+        prefs = SharedPreferencesManager(this)
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+
+        updateNavHeader(navView)
 
         findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -63,7 +59,20 @@ class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseC
         btnBackToCategories = findViewById(R.id.btnBackToCategories)
 
         exerciseAdapter = ExerciseAdapter(exerciseList, this)
-        muscleGroupAdapter = MuscleGroupAdapter(muscleGroupsWithEmojis) { category ->
+        
+        // Define muscle groups with their corresponding static XML drawables
+        val muscleGroupsWithIcons = listOf(
+            Triple("Chest", R.drawable.chest, "💪"),
+            Triple("Back", R.drawable.back, "🚣"),
+            Triple("Legs", R.drawable.legs, "🦵"),
+            Triple("Shoulders", R.drawable.shoulders, "🏹"),
+            Triple("Arms", R.drawable.arms, "🥊"),
+            Triple("Core", R.drawable.core, "🧘"),
+            Triple("Cardio", R.drawable.cardio, "🏃"),
+            Triple("Full Body", R.drawable.full_body, "🏋️")
+        )
+
+        muscleGroupAdapter = MuscleGroupAdapter(muscleGroupsWithIcons) { category ->
             showExercisesForCategory(category)
         }
 
@@ -72,6 +81,23 @@ class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseC
         }
 
         showCategories()
+    }
+
+    private fun updateNavHeader(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
+        val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
+
+        tvNavUsername.text = prefs.getUsername()
+        
+        val savedUri = prefs.getProfileImageUri()
+        if (savedUri != null) {
+            try {
+                ivNavProfilePic.setImageURI(Uri.parse(savedUri))
+            } catch (e: Exception) {
+                ivNavProfilePic.setImageResource(R.drawable.ff_gym_logo)
+            }
+        }
     }
 
     private fun showCategories() {
@@ -122,6 +148,7 @@ class ExerciseLibraryActivity : AppCompatActivity(), ExerciseAdapter.OnExerciseC
             R.id.nav_home -> HomeActivity::class.java
             R.id.nav_log_workout -> LogWorkoutActivity::class.java
             R.id.nav_history -> HistoryActivity::class.java
+            R.id.nav_exercise_library -> null
             R.id.nav_profile -> ProfileActivity::class.java
             R.id.nav_settings -> SettingsActivity::class.java
             else -> null
