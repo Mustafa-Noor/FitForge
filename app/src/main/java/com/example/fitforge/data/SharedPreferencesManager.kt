@@ -38,6 +38,10 @@ class SharedPreferencesManager(context: Context) {
     fun getUsername(): String = prefs.getString("username", "FitForge User") ?: "FitForge User"
     fun setUsername(name: String) = prefs.edit().putString("username", name).apply()
 
+    // ── Goals ─────────────────────────────────────────────
+    fun getWeeklyGoal(): Int = prefs.getInt("weekly_goal", 3)
+    fun setWeeklyGoal(goal: Int) = prefs.edit().putInt("weekly_goal", goal).apply()
+
     // ── Workouts (JSON list in SharedPreferences) ─────────
     fun saveWorkout(workout: Workout) {
         val existing = getWorkouts().toMutableList()
@@ -98,6 +102,7 @@ class SharedPreferencesManager(context: Context) {
             .remove("badge_built_diff").remove("badge_ghost")
             .remove("profile_image_uri")
             .remove("username")
+            .remove("weekly_goal")
             .apply()
     }
 }

@@ -38,54 +38,195 @@
                 style="@style/TitleTextStyle" />
         </LinearLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
-            android:padding="16dp"
             app:layout_constraintTop_toBottomOf="@id/layout_header"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchRoast"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Roast Notifications"
-                android:textColor="@color/fit_text_primary"
-                android:layout_marginBottom="8dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get roasted when you skip"
-                android:textSize="12sp"
-                android:textColor="@color/fit_text_secondary"
-                android:layout_marginBottom="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NOTIFICATIONS"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/fit_orange"
+                    android:layout_marginBottom="16dp" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchReminder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Daily Reminder"
-                android:textColor="@color/fit_text_primary"
-                android:layout_marginBottom="8dp" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    style="@style/DarkCardStyle">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nudge at 7:00 PM if not logged"
-                android:textSize="12sp"
-                android:textColor="@color/fit_text_secondary"
-                android:layout_marginBottom="32dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
 
-            <Button
-                android:id="@+id/btnClearData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Clear All Data"
-                android:backgroundTint="@color/fit_error"
-                android:textColor="@color/white" />
-        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="8dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Roast Notifications"
+                                    android:textColor="@color/fit_text_primary"
+                                    android:textSize="16sp" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Get insulted when you skip a workout"
+                                    android:textColor="@color/fit_text_secondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchRoast"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:thumbTint="@color/fit_orange"
+                                app:trackTint="@color/fit_orange_light" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/fit_divider"
+                            android:layout_marginHorizontal="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="8dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Daily Reminder"
+                                    android:textColor="@color/fit_text_primary"
+                                    android:textSize="16sp" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="A gentle nudge at 7:00 PM"
+                                    android:textColor="@color/fit_text_secondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchReminder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:thumbTint="@color/fit_orange"
+                                app:trackTint="@color/fit_orange_light" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GOALS &amp; PREFERENCES"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/fit_orange"
+                    android:layout_marginBottom="16dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    style="@style/DarkCardStyle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Weekly Goal"
+                            android:textColor="@color/fit_text_primary"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+                            <SeekBar
+                                android:id="@+id/seekBarGoal"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:max="7"
+                                android:progress="3"
+                                android:progressTint="@color/fit_orange"
+                                android:thumbTint="@color/fit_orange" />
+                            <TextView
+                                android:id="@+id/tvGoalValue"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:text="3"
+                                android:gravity="center"
+                                android:textColor="@color/fit_orange"
+                                android:textStyle="bold"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Target sessions per week"
+                            android:textColor="@color/fit_text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DANGER ZONE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/fit_error"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/btnClearData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear All Data"
+                    android:backgroundTint="@color/fit_surface"
+                    android:textColor="@color/fit_error"
+                    app:strokeColor="@color/fit_error"
+                    app:strokeWidth="1dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+            </LinearLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
