@@ -32,6 +32,14 @@ class SharedPreferencesManager(context: Context) {
     fun setRoastEnabled(enabled: Boolean) = prefs.edit().putBoolean("roast_enabled", enabled).apply()
     fun setReminderEnabled(enabled: Boolean) = prefs.edit().putBoolean("reminder_enabled", enabled).apply()
 
+    // ── Loyalty Points ────────────────────────────────────
+    fun getLoyaltyPoints(): Int = prefs.getInt("loyalty_points", 0)
+    
+    fun addLoyaltyPoints(points: Int) {
+        val current = getLoyaltyPoints()
+        prefs.edit().putInt("loyalty_points", current + points).apply()
+    }
+
     // ── Profile ───────────────────────────────────────────
     fun getProfileImageUri(): String? = prefs.getString("profile_image_uri", null)
     fun setProfileImageUri(uri: String) = prefs.edit().putString("profile_image_uri", uri).apply()
@@ -70,25 +78,54 @@ class SharedPreferencesManager(context: Context) {
 
     fun getLatestWorkout(): Workout? = getWorkouts().firstOrNull()
 
+    // ── Challenges ────────────────────────────────────────
+    fun getChallengeProgress(challengeId: String): Int {
+        return prefs.getInt("challenge_progress_$challengeId", 0) // returns current day index (0-based)
+    }
+
+    fun completeChallengeDay(challengeId: String, dayIndex: Int) {
+        val currentProgress = getChallengeProgress(challengeId)
+        if (dayIndex >= currentProgress) {
+            prefs.edit().putInt("challenge_progress_$challengeId", dayIndex + 1).apply()
+            // Award higher points for challenge completion (e.g., 20 points per day)
+            addLoyaltyPoints(20)
+        }
+    }
+
     // ── Badges ────────────────────────────────────────────
     fun isBadgeUnlocked(id: String): Boolean = prefs.getBoolean("badge_$id", false)
-    fun unlockBadge(id: String) = prefs.edit().putBoolean("badge_$id", true).apply()
+    
+    fun unlockBadge(id: String) {
+        if (!isBadgeUnlocked(id)) {
+            prefs.edit().putBoolean("badge_$id", true).apply()
+            // Award 50 points for unlocking a badge
+            addLoyaltyPoints(50)
+        }
+    }
 
     // ── Streak update logic ───────────────────────────────
     fun updateStreakAfterWorkout() {
         val today = LocalDate.now().toString()
         val lastDate = getLastLoggedDate()
         val current = getCurrentStreak()
-        val next = when {
-            lastDate == null -> 1
-            lastDate == today -> current
-            lastDate == LocalDate.now().minusDays(1).toString() -> current + 1
-            else -> 1
+        var next = current
+        
+        when {
+            lastDate == null -> next = 1
+            lastDate == today -> { /* Stay same */ }
+            lastDate == LocalDate.now().minusDays(1).toString() -> next = current + 1
+            else -> next = 1
         }
+        
         setStreak(next)
         setBestStreak(maxOf(next, getBestStreak()))
         setLastLoggedDate(today)
         setTotalWorkouts(getTotalWorkouts() + 1)
+        
+        // Check for 7-day streak badge
+        if (next >= 7) {
+            unlockBadge("7_day_streak")
+        }
     }
 
     // ── Clear all ─────────────────────────────────────────
@@ -97,9 +134,11 @@ class SharedPreferencesManager(context: Context) {
             .remove("current_streak").remove("best_streak")
             .remove("total_workouts").remove("last_logged_date")
             .remove("last_muscle_group").remove("workouts_json")
+            .remove("loyalty_points")
             .remove("badge_baby_gains").remove("badge_gym_rat")
             .remove("badge_leg_day").remove("badge_no_chill")
             .remove("badge_built_diff").remove("badge_ghost")
+            .remove("badge_7_day_streak")
             .remove("profile_image_uri")
             .remove("username")
             .remove("weekly_goal")

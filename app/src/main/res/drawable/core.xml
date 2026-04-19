@@ -28,15 +28,15 @@
   <!-- Torso Clothes (T-shirt) -->
   <path
       android:pathData="M128,160h44v44h-44z"
-      android:fillColor="@color/fit_orange"/>
+      android:fillColor="#ff9800"/>
   <path
       android:pathData="M150,144m-17,0a17,17 0 1 1 34 0a17,17 0 1 1 -34 0"
       android:fillColor="#c8864a"/>
   <!-- Arm Clothes (Sleeves) -->
   <path
       android:pathData="M108,138h28v10h-28z"
-      android:fillColor="@color/fit_orange"/>
+      android:fillColor="#ff9800"/>
   <path
       android:pathData="M164,138h28v10h-28z"
-      android:fillColor="@color/fit_orange"/>
+      android:fillColor="#ff9800"/>
 </vector>

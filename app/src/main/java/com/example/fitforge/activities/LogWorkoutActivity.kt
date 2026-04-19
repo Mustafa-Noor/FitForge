@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import android.text.TextWatcher
+import com.example.fitforge.data.ExerciseData
 import com.google.android.material.imageview.ShapeableImageView
 
 class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -45,6 +46,7 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private lateinit var tvTitle: TextView
     private lateinit var prefs: SharedPreferencesManager
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
 
     private var isEditMode = false
     private var workoutToEdit: Workout? = null
@@ -57,10 +59,10 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
         prefs = SharedPreferencesManager(this)
         drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
 
-        updateNavHeader(navView)
+        updateNavHeader()
 
         findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -104,7 +106,7 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         findViewById<Button>(R.id.btn_cancel).setOnClickListener { finish() }
     }
 
-    private fun updateNavHeader(navView: NavigationView) {
+    private fun updateNavHeader() {
         val headerView = navView.getHeaderView(0)
         val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
         val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
@@ -197,6 +199,17 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             prefs.saveWorkout(workout)
             prefs.updateStreakAfterWorkout()
             
+            // --- AWARD LOYALTY POINTS BASED ON LEVEL ---
+            val exerciseDef = ExerciseData.exercises.find { it.name.equals(name, ignoreCase = true) }
+            val points = when (exerciseDef?.level) {
+                "Beginner" -> 5
+                "Intermediate" -> 10
+                "Advanced" -> 15
+                else -> 5 // Default for custom exercises
+            }
+            prefs.addLoyaltyPoints(points)
+            // --------------------------------------------
+
             val previousMuscleGroup = prefs.getLastMuscleGroup() ?: ""
             prefs.setLastMuscleGroup(muscle)
 
@@ -209,7 +222,7 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             )
             newBadges.forEach { badge -> showBadgeDialog(badge) }
             FitNotificationManager.sendWorkoutLoggedNotification(this)
-            Toast.makeText(this, "Logged. Built different.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Logged. +$points Points! 💎", Toast.LENGTH_SHORT).show()
         }
         
         finish()
@@ -240,7 +253,7 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private fun showBadgeDialog(badge: Badge) {
         AlertDialog.Builder(this, R.style.FitAlertDialogTheme)
             .setTitle("${badge.emoji} ${badge.name}")
-            .setMessage(badge.description)
+            .setMessage(badge.description + "\n\n+50 Loyalty Points! 💰")
             .setPositiveButton("Let's go!", null)
             .show()
     }
@@ -248,6 +261,7 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val dest = when (item.itemId) {
             R.id.nav_home -> HomeActivity::class.java
+            R.id.nav_challenges -> ChallengesActivity::class.java
             R.id.nav_log_workout -> null
             R.id.nav_history -> HistoryActivity::class.java
             R.id.nav_exercise_library -> ExerciseLibraryActivity::class.java

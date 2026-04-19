@@ -17,7 +17,6 @@ import com.example.fitforge.R
 import com.example.fitforge.adapters.WorkoutAdapter
 import com.example.fitforge.data.SharedPreferencesManager
 import com.example.fitforge.data.models.Workout
-import com.example.fitforge.utils.RoastStrings
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 import java.time.LocalDate
@@ -30,6 +29,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var tvTotalWorkouts: TextView
     private lateinit var tvBestStreak: TextView
     private lateinit var tvTodayEmpty: TextView
+    private lateinit var tvLoyaltyPoints: TextView
     private lateinit var rvTodayWorkouts: RecyclerView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
@@ -46,13 +46,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
 
-        updateNavHeader(navView)
+        updateNavHeader()
 
         tvStreakNumber   = findViewById(R.id.tvStreakNumber)
         tvLastLogged     = findViewById(R.id.tvLastLogged)
         tvTotalWorkouts  = findViewById(R.id.tvTotalWorkouts)
         tvBestStreak     = findViewById(R.id.tvBestStreak)
         tvTodayEmpty     = findViewById(R.id.tvTodayEmpty)
+        tvLoyaltyPoints  = findViewById(R.id.tvLoyaltyPoints)
         rvTodayWorkouts  = findViewById(R.id.rvTodayWorkouts)
 
         findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
@@ -86,7 +87,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun updateNavHeader(navView: NavigationView) {
+    private fun updateNavHeader() {
         val headerView = navView.getHeaderView(0)
         val tvNavUsername: TextView = headerView.findViewById(R.id.tvNavUsername)
         val ivNavProfilePic: ShapeableImageView = headerView.findViewById(R.id.ivNavProfilePic)
@@ -106,7 +107,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         loadData()
-        updateNavHeader(findViewById(R.id.nav_view))
+        updateNavHeader()
     }
 
     private fun loadData() {
@@ -114,11 +115,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val total  = prefs.getTotalWorkouts()
         val best   = prefs.getBestStreak()
         val lastDate = prefs.getLastLoggedDate() ?: "Never"
+        val points = prefs.getLoyaltyPoints()
 
         tvStreakNumber.text  = streak.toString()
         tvLastLogged.text    = "Last logged: $lastDate"
         tvTotalWorkouts.text = total.toString()
         tvBestStreak.text    = "🔥${best}d"
+        tvLoyaltyPoints.text = points.toString()
 
         // Load Today's Workouts
         val today = LocalDate.now().toString()
@@ -127,7 +130,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             runCatching { java.time.Instant.ofEpochMilli(it.dateMillis).atZone(java.time.ZoneId.systemDefault()).toLocalDate().toString() == today }.getOrDefault(false)
         }
 
-        todayAdapter.setData(todayLogs)
+        todayAdapter.setData(todayLogs.toMutableList())
 
         if (todayLogs.isEmpty()) {
             tvTodayEmpty.visibility = View.VISIBLE
@@ -158,6 +161,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val dest = when (item.itemId) {
+            R.id.nav_challenges -> ChallengesActivity::class.java
             R.id.nav_log_workout -> LogWorkoutActivity::class.java
             R.id.nav_history -> HistoryActivity::class.java
             R.id.nav_exercise_library -> ExerciseLibraryActivity::class.java

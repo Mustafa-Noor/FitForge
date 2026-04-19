@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitforge.R
 import com.example.fitforge.data.models.Badge
@@ -40,6 +41,13 @@ class BadgeAdapter(
         } else {
             holder.ivLockStatus.visibility = View.VISIBLE
             holder.itemView.alpha = 0.6f
+        }
+
+        holder.itemView.setOnClickListener {
+            val status = if (badge.isUnlocked) "✅ Unlocked!" else "🔒 Locked"
+            Toast.makeText(holder.itemView.context, 
+                "${badge.emoji} ${badge.name}: ${badge.description}\nStatus: $status", 
+                Toast.LENGTH_SHORT).show()
         }
     }
 

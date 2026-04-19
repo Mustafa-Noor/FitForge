@@ -34,6 +34,9 @@
         <activity android:name=".activities.ExerciseLibraryActivity" android:exported="false" />
         <activity android:name=".activities.ProfileActivity" android:exported="false" />
         <activity android:name=".activities.SettingsActivity" android:exported="false" />
+        <activity android:name=".activities.ChallengesActivity" android:exported="false" />
+        <activity android:name=".activities.ChallengeDetailActivity" android:exported="false" />
+        <activity android:name=".activities.DayExercisesActivity" android:exported="false" />
 
         <receiver
             android:name=".notifications.RoastReceiver"
