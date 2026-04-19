@@ -99,8 +99,8 @@
                                 android:id="@+id/switchRoast"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                app:thumbTint="@color/fit_orange"
-                                app:trackTint="@color/fit_orange_light" />
+                                app:thumbTint="@color/switch_thumb_selector"
+                                app:trackTint="@color/switch_track_selector" />
                         </LinearLayout>
 
                         <View
@@ -110,11 +110,13 @@
                             android:layout_marginHorizontal="8dp" />
 
                         <LinearLayout
+                            android:id="@+id/layoutReminderTime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:padding="8dp">
+                            android:padding="8dp"
+                            android:background="?attr/selectableItemBackground">
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -127,6 +129,7 @@
                                     android:textColor="@color/fit_text_primary"
                                     android:textSize="16sp" />
                                 <TextView
+                                    android:id="@+id/tvReminderTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="A gentle nudge at 7:00 PM"
@@ -137,8 +140,8 @@
                                 android:id="@+id/switchReminder"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                app:thumbTint="@color/fit_orange"
-                                app:trackTint="@color/fit_orange_light" />
+                                app:thumbTint="@color/switch_thumb_selector"
+                                app:trackTint="@color/switch_track_selector" />
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

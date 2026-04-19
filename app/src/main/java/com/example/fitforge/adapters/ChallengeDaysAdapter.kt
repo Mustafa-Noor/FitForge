@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitforge.R
 import com.example.fitforge.data.models.ChallengeDay
@@ -12,6 +13,7 @@ import com.example.fitforge.data.models.ChallengeDay
 class ChallengeDaysAdapter(
     private val days: List<ChallengeDay>,
     private val currentDayIndex: Int,
+    private val hasCompletedToday: Boolean,
     private val onDayClick: (ChallengeDay) -> Unit
 ) : RecyclerView.Adapter<ChallengeDaysAdapter.DayViewHolder>() {
 
@@ -32,13 +34,42 @@ class ChallengeDaysAdapter(
         holder.tvDay.text = day.dayNumber.toString()
         holder.tvDayLabel.text = "Day ${day.dayNumber}"
         
-        val isLocked = position > currentDayIndex
-        holder.ivLocked.visibility = if (isLocked) View.VISIBLE else View.GONE
-        holder.tvDay.alpha = if (isLocked) 0.5f else 1.0f
-        holder.tvDayLabel.alpha = if (isLocked) 0.5f else 1.0f
+        val isFutureDay = position > currentDayIndex
+        // A day is "locked" if it's in the future OR if the user already did a day today and this is the next one
+        val isLocked = isFutureDay || (hasCompletedToday && position == currentDayIndex)
+        val isCompleted = position < currentDayIndex
+
+        holder.ivLocked.visibility = if (isLocked && !isCompleted) View.VISIBLE else View.GONE
+        
+        // Visual feedback for different states
+        when {
+            isCompleted -> {
+                holder.tvDay.alpha = 1.0f
+                holder.tvDayLabel.alpha = 1.0f
+                holder.tvDay.text = "✅"
+            }
+            isLocked -> {
+                holder.tvDay.alpha = 0.4f
+                holder.tvDayLabel.alpha = 0.4f
+            }
+            else -> {
+                holder.tvDay.alpha = 1.0f
+                holder.tvDayLabel.alpha = 1.0f
+            }
+        }
         
         holder.itemView.setOnClickListener {
-            if (!isLocked) onDayClick(day)
+            if (isCompleted) {
+                Toast.makeText(holder.itemView.context, "Already crushed this day! 💪", Toast.LENGTH_SHORT).show()
+            } else if (isLocked) {
+                if (hasCompletedToday && position == currentDayIndex) {
+                    Toast.makeText(holder.itemView.context, "One day at a time, champ! Come back tomorrow. ⏳", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(holder.itemView.context, "Complete previous days first! 🔒", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                onDayClick(day)
+            }
         }
     }
 

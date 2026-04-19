@@ -38,4 +38,10 @@
     <style name="FitDialogButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/fit_orange</item>
     </style>
+
+    <style name="FitTimePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorAccent">@color/fit_orange</item>
+        <item name="android:windowBackground">@color/fit_surface</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
 </resources>

@@ -1,10 +1,10 @@
 package com.example.fitforge.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,7 +58,14 @@ class DayExercisesActivity : AppCompatActivity() {
             // Mark challenge day as complete
             prefs.completeChallengeDay(challengeId, dayNumber - 1) // dayNumber is 1-based, storage is 0-based index
             
-            Toast.makeText(this, "Day $dayNumber Completed and Logged! 🏋️", Toast.LENGTH_SHORT).show()
+            // Show Success Screen
+            val intent = Intent(this, SuccessAwardActivity::class.java)
+            intent.putExtra("points_earned", 20)
+            intent.putExtra("success_title", "DAY COMPLETED")
+            intent.putExtra("success_message", "Day $dayNumber of ${challenge.title} crushed!")
+            intent.putExtra("success_emoji", "🔥")
+            startActivity(intent)
+
             finish()
         }
     }

@@ -220,9 +220,17 @@ class LogWorkoutActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                 previousMuscleGroup = previousMuscleGroup,
                 prefs               = prefs
             )
+            
+            // Show Success Screen instead of just a Toast
+            val intent = Intent(this, SuccessAwardActivity::class.java)
+            intent.putExtra("points_earned", points)
+            intent.putExtra("success_title", "WORKOUT LOGGED")
+            intent.putExtra("success_message", "You crushed $name! +$points Points earned.")
+            intent.putExtra("success_emoji", "💪")
+            startActivity(intent)
+
             newBadges.forEach { badge -> showBadgeDialog(badge) }
             FitNotificationManager.sendWorkoutLoggedNotification(this)
-            Toast.makeText(this, "Logged. +$points Points! 💎", Toast.LENGTH_SHORT).show()
         }
         
         finish()

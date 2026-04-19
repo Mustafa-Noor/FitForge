@@ -1,9 +1,11 @@
 package com.example.fitforge.activities
 
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -14,14 +16,17 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.fitforge.R
 import com.example.fitforge.data.SharedPreferencesManager
+import com.example.fitforge.notifications.ReminderAlarmScheduler
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
+import java.util.Calendar
 
 class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var prefs: SharedPreferencesManager
     private lateinit var navView: NavigationView
+    private lateinit var tvReminderTime: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +47,13 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val switchReminder: SwitchCompat = findViewById(R.id.switchReminder)
         val seekBarGoal: SeekBar = findViewById(R.id.seekBarGoal)
         val tvGoalValue: TextView = findViewById(R.id.tvGoalValue)
+        val layoutReminderTime: LinearLayout = findViewById(R.id.layoutReminderTime)
+        tvReminderTime = findViewById(R.id.tvReminderTime)
 
         // Initial States
         switchRoast.isChecked = prefs.isRoastEnabled()
         switchReminder.isChecked = prefs.isReminderEnabled()
+        updateReminderTimeText()
         
         val savedGoal = prefs.getWeeklyGoal()
         seekBarGoal.progress = savedGoal
@@ -59,6 +67,21 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         switchReminder.setOnCheckedChangeListener { _, isChecked ->
             prefs.setReminderEnabled(isChecked)
+            if (isChecked) {
+                ReminderAlarmScheduler.scheduleDailyCheck(
+                    this, 
+                    prefs.getReminderHour(), 
+                    prefs.getReminderMinute()
+                )
+                Toast.makeText(this, "Daily reminder active.", Toast.LENGTH_SHORT).show()
+            } else {
+                ReminderAlarmScheduler.cancelDailyCheck(this)
+                Toast.makeText(this, "Reminder disabled.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        layoutReminderTime.setOnClickListener {
+            showTimePickerDialog()
         }
 
         seekBarGoal.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -74,6 +97,36 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         findViewById<android.widget.Button>(R.id.btnClearData).setOnClickListener {
             showClearDataDialog()
         }
+    }
+
+    private fun showTimePickerDialog() {
+        val currentHour = prefs.getReminderHour()
+        val currentMinute = prefs.getReminderMinute()
+
+        TimePickerDialog(this, R.style.FitTimePickerTheme, { _, hour, minute ->
+            prefs.setReminderTime(hour, minute)
+            updateReminderTimeText()
+            
+            // If reminders are already ON, reschedule immediately
+            if (prefs.isReminderEnabled()) {
+                ReminderAlarmScheduler.scheduleDailyCheck(this, hour, minute)
+            }
+            
+            Toast.makeText(this, "Reminder set to ${formatTime(hour, minute)}", Toast.LENGTH_SHORT).show()
+        }, currentHour, currentMinute, false).show()
+    }
+
+    private fun updateReminderTimeText() {
+        val hour = prefs.getReminderHour()
+        val minute = prefs.getReminderMinute()
+        tvReminderTime.text = "A gentle nudge at ${formatTime(hour, minute)}"
+    }
+
+    private fun formatTime(hour: Int, minute: Int): String {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.HOUR_OF_DAY, hour)
+        cal.set(Calendar.MINUTE, minute)
+        return java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(cal.time)
     }
 
     private fun updateNavHeader() {
@@ -110,6 +163,7 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val dest = when (item.itemId) {
             R.id.nav_home -> HomeActivity::class.java
+            R.id.nav_challenges -> ChallengesActivity::class.java
             R.id.nav_log_workout -> LogWorkoutActivity::class.java
             R.id.nav_history -> HistoryActivity::class.java
             R.id.nav_exercise_library -> ExerciseLibraryActivity::class.java

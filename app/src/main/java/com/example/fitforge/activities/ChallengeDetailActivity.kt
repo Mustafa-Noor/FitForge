@@ -11,6 +11,7 @@ import com.example.fitforge.R
 import com.example.fitforge.adapters.ChallengeDaysAdapter
 import com.example.fitforge.data.ChallengeData
 import com.example.fitforge.data.SharedPreferencesManager
+import java.time.LocalDate
 
 class ChallengeDetailActivity : AppCompatActivity() {
 
@@ -30,7 +31,6 @@ class ChallengeDetailActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerViewDays)
-        // Change to GridLayoutManager with 4 columns for a better grid view
         recyclerView.layoutManager = GridLayoutManager(this, 4)
         
         loadDays(challenge)
@@ -38,7 +38,11 @@ class ChallengeDetailActivity : AppCompatActivity() {
 
     private fun loadDays(challenge: com.example.fitforge.data.models.Challenge) {
         val currentProgress = prefs.getChallengeProgress(challengeId)
-        adapter = ChallengeDaysAdapter(challenge.days, currentProgress) { day ->
+        val lastCompletionDate = prefs.getLastChallengeCompletionDate(challengeId)
+        val today = LocalDate.now().toString()
+        val hasCompletedToday = lastCompletionDate == today
+
+        adapter = ChallengeDaysAdapter(challenge.days, currentProgress, hasCompletedToday) { day ->
             val intent = Intent(this, DayExercisesActivity::class.java)
             intent.putExtra("challenge_id", challengeId)
             intent.putExtra("day_number", day.dayNumber)
@@ -49,7 +53,7 @@ class ChallengeDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Refresh progress when returning from exercise screen
+        // Refresh progress and locks when returning
         val challenge = ChallengeData.challenges.find { it.id == challengeId }
         challenge?.let { loadDays(it) }
     }

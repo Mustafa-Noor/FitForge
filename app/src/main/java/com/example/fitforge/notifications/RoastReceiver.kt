@@ -10,20 +10,26 @@ import java.time.LocalDate
 class RoastReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent?) {
 		val prefs = SharedPreferencesManager(context)
-		val lastDateStr = prefs.getLastLoggedDate() ?: return
-
-		val lastDate = runCatching { java.time.LocalDate.parse(lastDateStr) }.getOrNull() ?: return
-		val today    = java.time.LocalDate.now()
-		val daysSince = java.time.temporal.ChronoUnit.DAYS.between(lastDate, today)
-
-		when {
-			daysSince >= 2 && prefs.isRoastEnabled() -> {
-				// Reset streak
-				prefs.setStreak(0)
-				FitNotificationManager.sendRoastNotification(context, RoastStrings.getMissedDayRoast())
-			}
-			daysSince == 1L && prefs.isReminderEnabled() -> {
+		
+		// If user HAS NOT logged today, send a notification
+		val today = LocalDate.now().toString()
+		val lastDateStr = prefs.getLastLoggedDate()
+		
+		if (lastDateStr != today) {
+			if (prefs.isReminderEnabled()) {
 				FitNotificationManager.sendReminderNotification(context)
+			}
+			
+			// If it's been 2+ days, roast them
+			lastDateStr?.let {
+				val lastDate = runCatching { LocalDate.parse(it) }.getOrNull()
+				if (lastDate != null) {
+					val daysSince = java.time.temporal.ChronoUnit.DAYS.between(lastDate, LocalDate.now())
+					if (daysSince >= 2 && prefs.isRoastEnabled()) {
+						prefs.setStreak(0)
+						FitNotificationManager.sendRoastNotification(context, RoastStrings.getMissedDayRoast())
+					}
+				}
 			}
 		}
 	}

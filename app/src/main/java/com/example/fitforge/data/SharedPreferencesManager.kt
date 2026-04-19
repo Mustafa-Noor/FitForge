@@ -32,6 +32,17 @@ class SharedPreferencesManager(context: Context) {
     fun setRoastEnabled(enabled: Boolean) = prefs.edit().putBoolean("roast_enabled", enabled).apply()
     fun setReminderEnabled(enabled: Boolean) = prefs.edit().putBoolean("reminder_enabled", enabled).apply()
 
+    // ── Reminder Time ─────────────────────────────────────
+    fun getReminderHour(): Int = prefs.getInt("reminder_hour", 19) // Default 7 PM (19:00)
+    fun getReminderMinute(): Int = prefs.getInt("reminder_minute", 0)
+    
+    fun setReminderTime(hour: Int, minute: Int) {
+        prefs.edit()
+            .putInt("reminder_hour", hour)
+            .putInt("reminder_minute", minute)
+            .apply()
+    }
+
     // ── Loyalty Points ────────────────────────────────────
     fun getLoyaltyPoints(): Int = prefs.getInt("loyalty_points", 0)
     
@@ -83,11 +94,19 @@ class SharedPreferencesManager(context: Context) {
         return prefs.getInt("challenge_progress_$challengeId", 0) // returns current day index (0-based)
     }
 
+    fun getLastChallengeCompletionDate(challengeId: String): String? {
+        return prefs.getString("challenge_last_date_$challengeId", null)
+    }
+
     fun completeChallengeDay(challengeId: String, dayIndex: Int) {
         val currentProgress = getChallengeProgress(challengeId)
+        val today = LocalDate.now().toString()
+        
         if (dayIndex >= currentProgress) {
-            prefs.edit().putInt("challenge_progress_$challengeId", dayIndex + 1).apply()
-            // Award higher points for challenge completion (e.g., 20 points per day)
+            prefs.edit()
+                .putInt("challenge_progress_$challengeId", dayIndex + 1)
+                .putString("challenge_last_date_$challengeId", today)
+                .apply()
             addLoyaltyPoints(20)
         }
     }
@@ -98,7 +117,6 @@ class SharedPreferencesManager(context: Context) {
     fun unlockBadge(id: String) {
         if (!isBadgeUnlocked(id)) {
             prefs.edit().putBoolean("badge_$id", true).apply()
-            // Award 50 points for unlocking a badge
             addLoyaltyPoints(50)
         }
     }
@@ -122,7 +140,6 @@ class SharedPreferencesManager(context: Context) {
         setLastLoggedDate(today)
         setTotalWorkouts(getTotalWorkouts() + 1)
         
-        // Check for 7-day streak badge
         if (next >= 7) {
             unlockBadge("7_day_streak")
         }
@@ -142,6 +159,8 @@ class SharedPreferencesManager(context: Context) {
             .remove("profile_image_uri")
             .remove("username")
             .remove("weekly_goal")
+            .remove("reminder_hour")
+            .remove("reminder_minute")
             .apply()
     }
 }
