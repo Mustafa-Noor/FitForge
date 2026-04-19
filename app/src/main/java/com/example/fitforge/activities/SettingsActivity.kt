@@ -1,7 +1,10 @@
 package com.example.fitforge.activities
 
+import android.Manifest
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -12,6 +15,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.fitforge.R
@@ -62,12 +67,14 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Listeners
         switchRoast.setOnCheckedChangeListener { _, isChecked ->
             prefs.setRoastEnabled(isChecked)
+            if (isChecked) checkNotificationPermission()
             Toast.makeText(this, if (isChecked) "Roasts active. Watch out." else "Roasts disabled. Soft.", Toast.LENGTH_SHORT).show()
         }
 
         switchReminder.setOnCheckedChangeListener { _, isChecked ->
             prefs.setReminderEnabled(isChecked)
             if (isChecked) {
+                checkNotificationPermission()
                 ReminderAlarmScheduler.scheduleDailyCheck(
                     this, 
                     prefs.getReminderHour(), 
@@ -96,6 +103,14 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         findViewById<android.widget.Button>(R.id.btnClearData).setOnClickListener {
             showClearDataDialog()
+        }
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
+            }
         }
     }
 

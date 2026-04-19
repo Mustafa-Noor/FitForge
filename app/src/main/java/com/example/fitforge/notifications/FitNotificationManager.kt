@@ -20,8 +20,8 @@ object FitNotificationManager {
 			NotificationChannel(CHANNEL_ROAST, "Roast Notifications", NotificationManager.IMPORTANCE_DEFAULT).apply {
 				description = "Gets sent when you skip. You'll deserve it."
 			},
-			NotificationChannel(CHANNEL_REMINDER, "Daily Reminder", NotificationManager.IMPORTANCE_LOW).apply {
-				description = "Gentle nudge at 7 PM"
+			NotificationChannel(CHANNEL_REMINDER, "Daily Reminder", NotificationManager.IMPORTANCE_DEFAULT).apply {
+				description = "Gentle nudge to keep your streak"
 			},
 			NotificationChannel(CHANNEL_HYPE, "Hype Notifications", NotificationManager.IMPORTANCE_DEFAULT).apply {
 				description = "Post-workout celebration"
@@ -57,8 +57,9 @@ object FitNotificationManager {
 		val notification = NotificationCompat.Builder(context, CHANNEL_REMINDER)
 			.setSmallIcon(R.drawable.ff_gym_logo)
 			.setContentTitle("FitForge Reminder")
-			.setContentText("You haven't logged today. 7 PM check-in time.")
-			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			.setContentText("You haven't logged today. Time to get to work! 💪")
+			.setPriority(NotificationCompat.PRIORITY_HIGH) // Set to High priority for better visibility
+			.setDefaults(NotificationCompat.DEFAULT_ALL)
 			.setAutoCancel(true)
 			.build()
 

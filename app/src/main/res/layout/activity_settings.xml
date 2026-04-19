@@ -132,7 +132,7 @@
                                     android:id="@+id/tvReminderTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="A gentle nudge at 7:00 PM"
+                                    android:text="A gentle nudge to keep you consistent"
                                     android:textColor="@color/fit_text_secondary"
                                     android:textSize="12sp" />
                             </LinearLayout>
